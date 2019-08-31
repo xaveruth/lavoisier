@@ -73,10 +73,22 @@ function draw() {
 					textQueue += elements[correctedIndex].text.substring(1,2);
 				}
 
+				//0.15: asterisk after symbol
+				else if (characterCorrection == 0.15) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += '*';
+				}
+
 				//0.2: apostrophe after one-letter symbol
 				else if (characterCorrection == 0.2) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += "'";
+				}
+
+				//0.25: open bracket before symbol
+				else if (characterCorrection == 0.25) {
+					textQueue += '(';
+					textQueue += elements[correctedIndex].text;
 				}
 
 				//0.3: exclamation point in middle of two-letter symbol
@@ -86,10 +98,23 @@ function draw() {
 					textQueue += elements[correctedIndex].text.substring(1,2);
 				}
 
+				//0.35: close bracket after symbol
+				else if (characterCorrection == 0.35) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += ')';
+				}
+
 				//0.4: second letter of symbol is é
 				else if (characterCorrection == 0.4) {
 					textQueue += elements[correctedIndex].text.substring(0,1);
 					textQueue += 'é';
+				}
+
+				//0.45: question mark in middle of two-letter symbol
+				else if (characterCorrection == 0.45) {
+					textQueue += elements[correctedIndex].text.substring(0,1);
+					textQueue += "?";
+					textQueue += elements[correctedIndex].text.substring(1,2);
 				}
 
 				//0.5: exclamation point after symbol
@@ -98,16 +123,34 @@ function draw() {
 					textQueue += '!';
 				}
 
+				//0.55: question mark after symbol
+				else if (characterCorrection == 0.55) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += '?';
+				}
+
 				//0.6: comma after symbol
 				else if (characterCorrection == 0.6) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += ',';
 				}
 
+				//0.65: dash before symbol
+				else if (characterCorrection == 0.65) {
+					textQueue += '-';
+					textQueue += elements[correctedIndex].text;
+				}
+
 				//0.7: quotation marks before symbol
 				else if (characterCorrection == 0.7) {
 					textQueue += '"';
 					textQueue += elements[correctedIndex].text;
+				}
+
+				//0.75: period after symbol
+				else if (characterCorrection == 0.75) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += '.';
 				}
 
 				//0.8: quotation marks after symbol
@@ -123,11 +166,7 @@ function draw() {
 					textQueue += elements[correctedIndex].text.substring(1,2);
 				}
 
-				//0.15: asterisk after symbol
-				else if (characterCorrection == 0.15) {
-					textQueue += elements[correctedIndex].text;
-					textQueue += '*';
-				}
+			
 
 				colourQueue += str(lyrics[2][i]);				//add current colour to colour queue
 				
@@ -175,7 +214,7 @@ function draw() {
 	printAsteriskText(numBeats);
 
 	//metronome
-	runMetronome(numBeats);
+	//runMetronome(numBeats);
 }
 
 function getTime() {
@@ -199,8 +238,15 @@ function printAsteriskText(numBeats) {
 		stroke(0);
 		fill(0);
 		strokeWeight(2);
-		text('put asterisk text here', 800, 700);
-		print('hi');
+		text('*TeCHNiCAl NoTe: UV RaYS POSSeSS No InHeReNT mAsS, NoR, eRgO, HeAt', 800, 650);
+	}
+
+	//#2: Revolution
+	if (numBeats > 445 && numBeats < 453) {
+		stroke(0);
+		fill(0);
+		strokeWeight(2);
+		text('*NoTe: ThIS IS A tRaCK ThAt EsPOUSeS eGaLiTe, LiBErTe, AlSO FrAtErNiTe, BUT, iN FaCT, AH, OUR gUY LaVOISiEr WaS KINd OF WISHY-WAsHY ON THe, UH, ReVOLuTiON ThINGeE, uH SO…', 800, 650);
 	}
 }
 
@@ -313,7 +359,6 @@ function runMetronome(numBeats) {
   			osc.amp(0);
   		}
   	//}
-
 }
 
 
