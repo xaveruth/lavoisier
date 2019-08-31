@@ -4,6 +4,8 @@
 
 
 var elements = [];
+var boxxWidths = [];
+var boxxElements = [];
 var lyricsIndex = 0;
 var g = (0, 255, 0, 255);
 //var version = 2; 		//1 = Funky Funk, 2 = Tom Lehrer Elements
@@ -44,14 +46,20 @@ function draw() {
 	if (lyricsIndex < lyrics[0].length) {
 
 		//-----PRINT LYRICS-----//
-
 		var colourQueue = "";
 
 		//get current text
 		var textQueue = "";
 		var prevBreak = getPrevBreak(numBeats);
 		var nextBreak = getNextBreak(numBeats);
+		var boxxWidthCum = 0;
+		var boxxCount = 0;
 
+		//initialize boxxwidths and boxxElements to 0
+		for (var i = 0; i < 50; i++) boxxWidths[i] = 0;
+		for (var i = 0; i < 50; i++) boxxElements[i] = 0;
+
+		var boxxIndex = 0;
 
 		//iterate from prevbreak to nextbreak, add all lyrics to queue
 		for (var i = prevBreak; i < nextBreak; i++) {
@@ -59,7 +67,8 @@ function draw() {
 				var currIndex = lyrics[0][i] - 1;
 				var correctedIndex = floor(currIndex);
 				var characterCorrection = round(100 * (currIndex - correctedIndex)) / 100; //make correction for special corrections like comma, apostrophe, etc.
-
+				var boxxWidth = 0;
+				var extraCharacter = "";
 
 				//0: nothing weird
 				if (characterCorrection == 0) {
@@ -71,12 +80,29 @@ function draw() {
 					textQueue += elements[correctedIndex].text.substring(0,1);
 					textQueue += "'";
 					textQueue += elements[correctedIndex].text.substring(1,2);
+					extraCharacter = "'";
+				}
+
+				//0.15: asterisk after symbol
+				else if (characterCorrection == 0.15) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += '*';
+					extraCharacter = '*';
 				}
 
 				//0.2: apostrophe after one-letter symbol
 				else if (characterCorrection == 0.2) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += "'";
+					extraCharacter = "'";
+
+				}
+
+				//0.25: open bracket before symbol
+				else if (characterCorrection == 0.25) {
+					textQueue += '(';
+					textQueue += elements[correctedIndex].text;
+					extraCharacter = '(';
 				}
 
 				//0.3: exclamation point in middle of two-letter symbol
@@ -84,36 +110,49 @@ function draw() {
 					textQueue += elements[correctedIndex].text.substring(0,1);
 					textQueue += '!';
 					textQueue += elements[correctedIndex].text.substring(1,2);
+					extraCharacter = '!';
+				}
+
+				//0.35: closed bracket after symbol
+				else if (characterCorrection == 0.35) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += ')';
+					extraCharacter = ')';
 				}
 
 				//0.4: second letter of symbol is é
 				else if (characterCorrection == 0.4) {
 					textQueue += elements[correctedIndex].text.substring(0,1);
 					textQueue += 'é';
+					extraCharacter = 'é';
 				}
 
 				//0.5: exclamation point after symbol
 				else if (characterCorrection == 0.5) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += '!';
+					extraCharacter = '!';
 				}
 
 				//0.6: comma after symbol
 				else if (characterCorrection == 0.6) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += ',';
+					extraCharacter = ',';
 				}
 
 				//0.7: quotation marks before symbol
 				else if (characterCorrection == 0.7) {
 					textQueue += '"';
 					textQueue += elements[correctedIndex].text;
+					extraCharacter = '"';
 				}
 
 				//0.8: quotation marks after symbol
 				else if (characterCorrection == 0.8) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += '"';
+					extraCharacter = '"';
 				}
 
 				//0.9: comma in middle of two-letter symbol
@@ -121,13 +160,31 @@ function draw() {
 					textQueue += elements[correctedIndex].text.substring(0,1);
 					textQueue += ',';
 					textQueue += elements[correctedIndex].text.substring(1,2);
+					extraCharacter = ',';
 				}
 
-				//0.15: asterisk after symbol
-				else if (characterCorrection == 0.15) {
-					textQueue += elements[correctedIndex].text;
-					textQueue += '*';
+
+				//print(elements[correctedIndex].text.substring(0,1));
+				//find boxx width
+				
+				for (var j = 0; j < charWidthsAlpha.length; j++) {
+					for (var k = 0; k < elements[correctedIndex].text.length; k++) {	
+						if (elements[correctedIndex].text.substring(k, k + 1) == charWidthsAlpha[j]) {
+							boxxWidth += charWidthsNum[j];
+						}
+					}					
+					if (extraCharacter == charWidthsAlpha[j]) {
+						boxxWidth += charWidthsNum[j];
+					}
 				}
+				boxxWidths[boxxIndex] = boxxWidth;
+				boxxElements[boxxIndex] = elements[correctedIndex].atomicNumber;
+				boxxIndex++;
+				//print(elements[correctedIndex].text, extraCharacter, boxxWidth);
+				
+				
+
+			
 
 				colourQueue += str(lyrics[2][i]);				//add current colour to colour queue
 				
@@ -139,10 +196,10 @@ function draw() {
 	}	
 
 	//-----CAPTION-----//
-	setAestheticParameters('caption');
 
 	//get total charWidth of current string
 	var totalCharWidth = getTotalCharWidth(textQueue);
+	var totalBoxxWidth = getTotalBoxxWidth(boxxWidths);
 
 	//iterate through all characters in string
 	var spacing = 0;
@@ -163,20 +220,48 @@ function draw() {
 		}
 
 		else if (captionAlign == 'right') {
-			text(textQueue[i], rightAlign - charWidthCorrection * (totalCharWidth - spacing), 600);
+			setAestheticParameters('caption');
+			text(textQueue[i], rightAlign - charWidthCorrection * (totalCharWidth - spacing), captionYcoord);
+
+			//rect(rightAlign - boxWidthCorrection * (totalBoxxWidth - boxxWidth), 590, boxWidthCorrection * boxxWidth, 50);
+			//rect(rightAlign - boxxWidthCum, 590, boxWidthCorrection * boxxWidth, 50);
+		}
+	}
+
+	//draw boxxes
+	if (boxxToggle == true) {
+		//determine number of boxxes to be drawn
+		for (var i = 0; i < boxxWidths.length; i++) {
+			if (boxxWidths[i] > 0) boxxCount++;
+		}
+
+		//draw boxxes
+		var cumWidth = 0;
+		totalBoxxWidth *= boxxWidthCorrection;
+		for (var i = 0; i < boxxCount; i++) {
+			setAestheticParameters('boxx');
+			rect(rightAlign - totalBoxxWidth + cumWidth, boxxYcoord, boxxWidthCorrection * boxxWidths[i], boxxHeight);
+			cumWidth += boxxWidthCorrection * boxxWidths[i];
+
+			//print atomic number
+			setAestheticParameters('boxxElement');
+			text(boxxElements[i], rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
 		}
 	}
 		
 	//print beats
-	fill(0, 0, 0, 255);
-	text(floor(numBeats), 20, 20, 300, 100);
+	if (beatToggle == true) {
+		fill(0, 0, 0, 255);
+		text(floor(numBeats), 20, 20, 300, 100);
+	}
 
 	//asterisk text
 	printAsteriskText(numBeats);
 
 	//metronome
-	runMetronome(numBeats);
+	//runMetronome(numBeats);
 }
+
 
 function getTime() {
   var m = millis();
@@ -189,6 +274,20 @@ function setAestheticParameters(element) {
 		textSize(captionSize);
 		textFont('Arial');
 		textAlign(RIGHT);
+	}
+
+	if (element == 'boxx') {
+		strokeWeight(2);
+		stroke(0);
+		noFill();
+	}
+
+	if (element == 'boxxElement') {
+		textSize(boxxElementSize);
+		noStroke();
+		textAlign(RIGHT);
+		textFont('Arial');
+		fill(0);
 	}
 }
 
@@ -213,6 +312,12 @@ function getTotalCharWidth(textQueue) {
 		}
 	}
 	return totalCharWidth;
+}
+
+function getTotalBoxxWidth(boxxWidths) {
+	var sum = 0;
+	for (var i = 0; i < boxxWidths.length; i++) sum += boxxWidths[i];
+	return sum;
 }
 
 //get spacing of current character to be printed
@@ -263,7 +368,6 @@ function getPrevBreak(numBeats) {
 	for (var i = 0; i < lyrics[0].length; i++) {
 		if (lyrics[0][i] == 119 && lyrics[1][i] <= numBeats) {
 			check = i;
-			//console.log(currTiming, numBeats, i);
 		}
 	}
 	return check;
@@ -295,6 +399,7 @@ function drawBox (x, y, index) {
 	return index;
 }
 
+
 function runMetronome(numBeats) {
 	var osc;
 	osc = new p5.Oscillator();
@@ -313,10 +418,6 @@ function runMetronome(numBeats) {
   			osc.amp(0);
   		}
   	//}
-
 }
-
-
-
 
 
