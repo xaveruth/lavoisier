@@ -206,7 +206,7 @@ function draw() {
 					extraCharacter = ',';
 				}
 
-<<<<<<< HEAD
+
 
 				//print(elements[correctedIndex].text.substring(0,1));
 				//find boxx width
@@ -228,8 +228,7 @@ function draw() {
 				
 				
 
-=======
->>>>>>> efe0537da58160b83f96282776379fefaa3f90ae
+
 			
 
 				colourQueue += str(lyrics[2][i]);				//add current colour to colour queue
