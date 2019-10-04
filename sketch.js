@@ -1,6 +1,12 @@
 //TO-DO
-//1. try putting boxes around captions
+//1. fix element boxes -- punctuation
 //2. add metronome to see if i'm getting the rhythm right
+//3. get video download working
+
+//video stuff
+let capturer;
+let btn;
+let counter = 1;
 
 
 var elements = [];
@@ -27,6 +33,12 @@ function setup() {
     //set x and y values for each element on the screen
 	setCoords();
 
+	//video stuff
+	btn = document.createElement('button');
+  	btn.textContent = "start recording";
+  	document.body.appendChild(btn);
+  	btn.onclick = record;
+
   	//TODO: get canvas to scale to fit screen despite low resolution
 }
 
@@ -38,6 +50,16 @@ function draw() {
 	var numFrames, modFrames;
 	numFrames = floor(getTime()/1000 * 24);
 	var numBeats = getTime()/1000 * bpm * (1/60) + startAheadBy;
+
+
+	//video stuff
+	if(capturer){
+	 	capturer.capture(document.getElementById('defaultCanvas0'));  
+	    if(counter == 8){
+	    	frameRate(0);
+	      	btn.click();
+	    }
+	}
   	
 	//draw periodic table in off state for all
 	for (i = 0; i < elementList.length; i++) elements[i].drawBox('off');
@@ -472,4 +494,19 @@ function runMetronome(numBeats) {
   	//}
 }
 
+//video stuff
+function record() {
+  capturer = new CCapture({ format: 'webm' , framerate: 30} );
+  capturer.start();
+  btn.textContent = 'stop recording';
+
+  btn.onclick = e => {
+    capturer.stop();
+    capturer.save();
+    capturer = null;
+
+    btn.textContent = 'start recording';
+    btn.onclick = record;
+  };
+}
 
