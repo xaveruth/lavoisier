@@ -3,10 +3,6 @@
 //2. add metronome to see if i'm getting the rhythm right
 //3. get video download working
 
-//video stuff
-let capturer;
-let btn;
-let counter = 1;
 
 
 var elements = [];
@@ -22,7 +18,7 @@ function setup() {
   	//var scale = 70;
   	createCanvas(windowWidth, windowHeight);
  	pixelDensity(1);
- 	frameRate(24);
+ 	frameRate(30);
 
  	//create array of element objects
  	var numElements = elementList.length;
@@ -33,11 +29,9 @@ function setup() {
     //set x and y values for each element on the screen
 	setCoords();
 
-	//video stuff
-	btn = document.createElement('button');
-  	btn.textContent = "start recording";
-  	document.body.appendChild(btn);
-  	btn.onclick = record;
+
+
+
 
   	//TODO: get canvas to scale to fit screen despite low resolution
 }
@@ -48,18 +42,11 @@ function draw() {
   	noFill();
 
 	var numFrames, modFrames;
-	numFrames = floor(getTime()/1000 * 24);
+	numFrames = floor(getTime()/1000 * 30);
 	var numBeats = getTime()/1000 * bpm * (1/60) + startAheadBy;
 
 
-	//video stuff
-	if(capturer){
-	 	capturer.capture(document.getElementById('defaultCanvas0'));  
-	    if(counter == 8){
-	    	frameRate(0);
-	      	btn.click();
-	    }
-	}
+
   	
 	//draw periodic table in off state for all
 	for (i = 0; i < elementList.length; i++) elements[i].drawBox('off');
@@ -105,9 +92,24 @@ function draw() {
 					extraCharacter = "'";
 				}
 
-				//0.15: asterisk after symbol
-				else if (characterCorrection == 0.15) {
+				//0.11: dot dot dot after symbol
+				else if (characterCorrection == 0.11) {
 					textQueue += elements[correctedIndex].text;
+					textQueue += '...';
+					extraCharacter = '...';
+				}
+
+				//0.12: hyphen after symbol
+				else if (characterCorrection == 0.12) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += '-';
+					extraCharacter = '-';
+				}
+
+				//0.13: asterisk after symbol with é
+				else if (characterCorrection == 0.13) {
+					textQueue += elements[correctedIndex].text.substring(0,1);
+					textQueue += 'é';
 					textQueue += '*';
 					extraCharacter = '*';
 				}
@@ -116,6 +118,7 @@ function draw() {
 				else if (characterCorrection == 0.15) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += '*';
+					extraCharacter = '*';
 				}
 
 				//0.2: apostrophe after one-letter symbol
@@ -158,13 +161,13 @@ function draw() {
 				else if (characterCorrection == 0.35) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += ')';
+					extraCharacter = ')';
 				}
 
 				//0.4: second letter of symbol is é
 				else if (characterCorrection == 0.4) {
 					textQueue += elements[correctedIndex].text.substring(0,1);
 					textQueue += 'é';
-					extraCharacter = 'é';
 				}
 
 				//0.45: question mark in middle of two-letter symbol
@@ -172,6 +175,7 @@ function draw() {
 					textQueue += elements[correctedIndex].text.substring(0,1);
 					textQueue += "?";
 					textQueue += elements[correctedIndex].text.substring(1,2);
+					extraCharacter = '?';
 				}
 
 				//0.5: exclamation point after symbol
@@ -185,6 +189,8 @@ function draw() {
 				else if (characterCorrection == 0.55) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += '?';
+					extraCharacter = '?';
+
 				}
 
 				//0.6: comma after symbol
@@ -198,6 +204,8 @@ function draw() {
 				else if (characterCorrection == 0.65) {
 					textQueue += '-';
 					textQueue += elements[correctedIndex].text;
+					extraCharacter = '-';
+
 				}
 
 				//0.7: quotation marks before symbol
@@ -211,6 +219,7 @@ function draw() {
 				else if (characterCorrection == 0.75) {
 					textQueue += elements[correctedIndex].text;
 					textQueue += '.';
+					extraCharacter = '.';
 				}
 
 				//0.8: quotation marks after symbol
@@ -218,6 +227,14 @@ function draw() {
 					textQueue += elements[correctedIndex].text;
 					textQueue += '"';
 					extraCharacter = '"';
+				}
+
+				//0.85: quotation marks after symbol
+				else if (characterCorrection == 0.8) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += '?)';
+					extraCharacter = '?)';
+
 				}
 
 				//0.9: comma in middle of two-letter symbol
@@ -228,6 +245,19 @@ function draw() {
 					extraCharacter = ',';
 				}
 
+				//0.95: colon after symbol
+				else if (characterCorrection == 0.95) {
+					textQueue += elements[correctedIndex].text;
+					textQueue += ':';
+					extraCharacter = ':';
+				}
+
+				//0.999: switch atomic symbol and number
+				else if (characterCorrection == 0.99) {
+					var s = elements[correctedIndex].atomicNumber.toString();
+					textQueue += s;
+
+				}
 
 
 				//print(elements[correctedIndex].text.substring(0,1));
@@ -268,6 +298,33 @@ function draw() {
 	var totalCharWidth = getTotalCharWidth(textQueue);
 	var totalBoxxWidth = getTotalBoxxWidth(boxxWidths);
 
+	//draw boxxes
+	if (boxxToggle == true) {
+		//determine number of boxxes to be drawn
+		for (var i = 0; i < boxxWidths.length; i++) {
+			if (boxxWidths[i] > 0) boxxCount++;
+		}
+
+		//draw boxxes
+		var cumWidth = 0;
+		totalBoxxWidth *= boxxWidthCorrection;
+		for (var i = 0; i < boxxCount; i++) {
+			setAestheticParameters('boxx');
+			rect(rightAlign - totalBoxxWidth + cumWidth, boxxYcoord, boxxWidthCorrection * boxxWidths[i], boxxHeight);
+			cumWidth += boxxWidthCorrection * boxxWidths[i];
+
+			//print atomic number
+			setAestheticParameters('boxxElement');
+			if (characterCorrection == 0.99) {
+				text(elements[boxxElements[i] - 1].text, rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
+			}
+			else {
+				text(boxxElements[i], rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
+			}
+		}
+	}
+		
+
 	//iterate through all characters in string
 	var spacing = 0;
 	for (var i = 0; i < textQueue.length; i++) {
@@ -295,27 +352,7 @@ function draw() {
 		}
 	}
 
-	//draw boxxes
-	if (boxxToggle == true) {
-		//determine number of boxxes to be drawn
-		for (var i = 0; i < boxxWidths.length; i++) {
-			if (boxxWidths[i] > 0) boxxCount++;
-		}
 
-		//draw boxxes
-		var cumWidth = 0;
-		totalBoxxWidth *= boxxWidthCorrection;
-		for (var i = 0; i < boxxCount; i++) {
-			setAestheticParameters('boxx');
-			rect(rightAlign - totalBoxxWidth + cumWidth, boxxYcoord, boxxWidthCorrection * boxxWidths[i], boxxHeight);
-			cumWidth += boxxWidthCorrection * boxxWidths[i];
-
-			//print atomic number
-			setAestheticParameters('boxxElement');
-			text(boxxElements[i], rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
-		}
-	}
-		
 	//print beats
 	if (beatToggle == true) {
 		fill(0, 0, 0, 255);
@@ -347,6 +384,7 @@ function setAestheticParameters(element) {
 		strokeWeight(2);
 		stroke(0);
 		noFill();
+		fill(200,200,200,255);
 	}
 
 	if (element == 'boxxElement') {
@@ -356,24 +394,26 @@ function setAestheticParameters(element) {
 		textFont('Arial');
 		fill(0);
 	}
+
+	if (element == 'technicalNotes') {
+		stroke(50);
+		fill(0);
+		strokeWeight(2);
+		textSize(noteSize);
+	}
 }
 
 function printAsteriskText(numBeats) {
+	setAestheticParameters('technicalNotes');
 
 	//#1: UV rays
-	if (numBeats > 188 && numBeats < 194) {
-		stroke(0);
-		fill(0);
-		strokeWeight(2);
-		text('*TeCHNiCAl NoTe: UV RaYS POSSeSS No InHeReNT mAsS, NoR, eRgO, HeAt', 800, 650);
+	if (numBeats > noteOneStart && numBeats < noteOneEnd) {
+		text('*TeCHNiCAl NoTe: UV RaYS POSSeSS No InHeReNT mAsS, NoR, eRgO, HeAt', noteXCoord, noteYCoord);
 	}
 
 	//#2: Revolution
-	if (numBeats > 445 && numBeats < 453) {
-		stroke(0);
-		fill(0);
-		strokeWeight(2);
-		text('*NoTe: ThIS IS A tRaCK ThAt EsPOUSeS eGaLiTe, LiBErTe, AlSO FrAtErNiTe, BUT, iN FaCT, AH, OUR gUY LaVOISiEr WaS KINd OF WISHY-WAsHY ON THe, UH, ReVOLuTiON ThINGeE, uH SO…', 800, 650);
+	if (numBeats > noteTwoStart && numBeats < noteTwoEnd) {
+		text('*NoTe: ThIS IS A tRaCK ThAt EsPOUSeS eGaLiTe, LiBErTe, AlSO FrAtErNiTe, BUT, iN FaCT, \nAH, OUR gUY LaVOISiEr WaS KINd OF WISHY-WAsHY ON THe, UH, ReVOLuTiON ThINGeE, uH SO…', noteXCoord, noteYCoord);
 	}
 }
 
@@ -494,19 +534,4 @@ function runMetronome(numBeats) {
   	//}
 }
 
-//video stuff
-function record() {
-  capturer = new CCapture({ format: 'webm' , framerate: 30} );
-  capturer.start();
-  btn.textContent = 'stop recording';
-
-  btn.onclick = e => {
-    capturer.stop();
-    capturer.save();
-    capturer = null;
-
-    btn.textContent = 'start recording';
-    btn.onclick = record;
-  };
-}
 
