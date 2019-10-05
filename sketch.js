@@ -78,6 +78,7 @@ function draw() {
 				var characterCorrection = round(100 * (currIndex - correctedIndex)) / 100; //make correction for special corrections like comma, apostrophe, etc.
 				var boxxWidth = 0;
 				var extraCharacter = "";
+				var numCheck = false;
 
 				//0: nothing weird
 				if (characterCorrection == 0) {
@@ -256,28 +257,50 @@ function draw() {
 				else if (characterCorrection == 0.99) {
 					var s = elements[correctedIndex].atomicNumber.toString();
 					textQueue += s;
-
+					var numCheck = true;
 				}
 
 
 				//print(elements[correctedIndex].text.substring(0,1));
 				//find boxx width
+
+				//print(elements[correctedIndex].text);
 				
+
+				//GET BOXXWIDTH
 				for (var j = 0; j < charWidthsAlpha.length; j++) {
-					for (var k = 0; k < elements[correctedIndex].text.length; k++) {	
-						if (elements[correctedIndex].text.substring(k, k + 1) == charWidthsAlpha[j]) {
-							boxxWidth += charWidthsNum[j];
+
+					//case where it prints number instead of symbol
+					if (numCheck == true) {
+						for (var k = 0; k < s.length; k++) {	
+							if (s.substring(k, k + 1) == charWidthsAlpha[j]) {
+								boxxWidth += charWidthsNum[j];
+							}
 						}
-					}					
+					}
+
+					//regular cases
+					else {
+						for (var k = 0; k < elements[correctedIndex].text.length; k++) {	
+							if (elements[correctedIndex].text.substring(k, k + 1) == charWidthsAlpha[j]) {
+								boxxWidth += charWidthsNum[j];
+							}
+						}					
+					}
+
 					if (extraCharacter == charWidthsAlpha[j]) {
 						boxxWidth += charWidthsNum[j];
 					}
 				}
+
+
 				boxxWidths[boxxIndex] = boxxWidth;
+				boxxWidth+=5;
 				boxxElements[boxxIndex] = elements[correctedIndex].atomicNumber;
 				boxxIndex++;
 				//print(elements[correctedIndex].text, extraCharacter, boxxWidth);
 				
+				//print(textQueue, boxxWidth);
 				
 
 
@@ -296,7 +319,10 @@ function draw() {
 
 	//get total charWidth of current string
 	var totalCharWidth = getTotalCharWidth(textQueue);
-	var totalBoxxWidth = getTotalBoxxWidth(boxxWidths);
+	//get rid of the below function?
+	//var totalBoxxWidth = getTotalBoxxWidth(boxxWidths);		
+	var totalBoxxWidth = totalCharWidth;
+
 
 	//draw boxxes
 	if (boxxToggle == true) {
