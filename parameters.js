@@ -14,6 +14,7 @@ var boxOffThickness = 2;
 //ON/OFF TOGGLES
 var boxxToggle = true;
 var beatToggle = true;
+var videoCapture = true;
 
 
 //PTABLE COLOURS
@@ -92,7 +93,7 @@ var noteYCoord = 700;
 var bpm = 138;
 var secsPerMin = 60;
 var framesPerBeat = 24 * secsPerMin / bpm;
-var startAheadBy = 80;
+var startAheadBy = -10;
 
 
 elementList = ["H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al",

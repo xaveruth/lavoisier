@@ -1,8 +1,20 @@
 //TO-DO
 //1. fix element boxes -- punctuation
 //2. add metronome to see if i'm getting the rhythm right
-//3. get video download working
 
+
+
+//VIDEO NOTES
+//on becca's computer, captures at about 2s/beat
+//678 beats -- that's 23 minutes
+//seems to be slower if i'm doing other things
+//
+//is it possible to get higher resolution?
+
+
+let capturer;
+let btn;
+let counter = 1;
 
 
 var elements = [];
@@ -16,9 +28,16 @@ function setup() {
   	
   	//youTube aspect ratio is 16:9
   	//var scale = 70;
+  	frameRate(30);
   	createCanvas(windowWidth, windowHeight);
+	btn = document.createElement('button');
+  	btn.textContent = "start recording";
+  	document.body.appendChild(btn);
+  	btn.onclick = record;
+
+
  	pixelDensity(1);
- 	frameRate(30);
+ 	
 
  	//create array of element objects
  	var numElements = elementList.length;
@@ -28,10 +47,6 @@ function setup() {
 
     //set x and y values for each element on the screen
 	setCoords();
-
-
-
-
 
   	//TODO: get canvas to scale to fit screen despite low resolution
 }
@@ -390,6 +405,17 @@ function draw() {
 
 	//metronome
 	//runMetronome(numBeats);
+
+	//turn on video recording button
+	if(videoCapture == true) {
+		if(capturer){
+    		capturer.capture(document.getElementById('defaultCanvas0'));  
+    		if(counter == 8){
+      			frameRate(0);
+      			btn.click();
+    		}
+  		}
+  	}
 }
 
 
@@ -557,7 +583,21 @@ function runMetronome(numBeats) {
   		else {
   			osc.amp(0);
   		}
-  	//}
+  	//}\
 }
 
+function record() {
+  capturer = new CCapture({ format: 'webm' , framerate: 30} );
+  capturer.start();
+  btn.textContent = 'stop recording';
+
+  btn.onclick = e => {
+    capturer.stop();
+    capturer.save();
+    capturer = null;
+
+    btn.textContent = 'start recording';
+    btn.onclick = record;
+  };
+}
 
