@@ -1,20 +1,49 @@
 //GLOBAL VARIABLES
 //TODO: put separate functions in their own files?
 
-var boxWidth = 60;
+var GSP = 1; //Global Size Parameter
+
+//ON/OFF TOGGLES
+var boxxToggle = true;
+var beatToggle = true;
+var videoCapture = true;
+
+//CANVAS VARIABLES
+var canvasMode = 2; //0 -> only table, 1 -> only captions, 2 -> both
+var bg = 100;
+
+var boxWidth = 100 * GSP;
 var boxHeight = boxWidth * 5/6;
-var topLeftX = 30;
-var topLeftY = 20;
+var topLeftX = 10;
+var topLeftY = 10;
 var symbolSize = boxWidth/2.5;
 var symbolThickness = 0;
 var atomicNumberSize = boxWidth/6;
 var boxOnThickness = 5;
 var boxOffThickness = 2;
 
-//ON/OFF TOGGLES
-var boxxToggle = true;
-var beatToggle = true;
-var videoCapture = true;
+//CAPTIONS
+var captionSize = GSP * 80;
+var r = (255, 0, 0, 255);
+var g = (200, 255, 200, 0);
+var captionColourThree = (255, 255, 255, 100);
+var captionX = 0.9;
+var charWidthCorrection = 0.4;
+var captionAlign = 'right';
+var rightAlign = GSP * 1800;
+var leftBuffer = 50;
+if (canvasMode == 1) var captionYcoord = GSP * 30;
+if (canvasMode == 2) var captionYcoord = GSP * 950;
+
+
+//CAPTION BOXXES
+var boxxWidthCorrection = 0.4;
+var boxxHeight = captionSize * 1.1; //this doesn't seem to scale properly -- 1.1 is better for GSP = 1, but 1.2 is better for GSP = 0.5
+var boxxYcoord = captionYcoord - 10;
+var boxxElementCF = 2;
+var boxxElementSize = 10 * GSP;
+var extraBoxxWidth = 20 * GSP;
+//var white = color(255,255,255,255);
 
 
 //PTABLE COLOURS
@@ -54,26 +83,8 @@ var ptableCaptionColours =  [1,                                1,
                                    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4];
 
 
-//CAPTIONS
-var captionSize = 60;
-var r = (255, 0, 0, 255);
-var g = (200, 255, 200, 0);
-var captionColourThree = (255, 255, 255, 100);
-var captionX = 0.9;
-var charWidthCorrection = 0.4;
-var captionAlign = 'right';
-var rightAlign = 1200;
-var leftBuffer = 50;
-var captionYcoord = 600;
 
-//CAPTION BOXXES
-var boxxWidthCorrection = 0.4;
-var boxxHeight = captionSize * 1.2;
-var boxxYcoord = captionYcoord - 10;
-var boxxElementCF = 2;
-var boxxElementSize = 10;
-var extraBoxxWidth = 20;
-//var white = color(255,255,255,255);
+
 
 //TECHNICAL NOTES
 var noteOneStart = 309;

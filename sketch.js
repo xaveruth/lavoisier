@@ -2,7 +2,14 @@
 //1. fix element boxes -- punctuation
 //2. add metronome to see if i'm getting the rhythm right
 
-
+//FFMPEG command
+//ffmpeg -r 30 -f image2 -s 3940x2160 -i %07d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test.mp4
+//WHAT YOU MAY HAVE TO CHANGE
+//number after -r is frame rate
+//number after -s is resolution
+//number after -crf is quality (25 is "high" but i'm not sure if it's max)
+//the thing after -pix_fmt is pixel format -- don't know anything about this 
+//the %07d is the filename -- it just means the first one is 0000000
 
 //VIDEO NOTES
 //on becca's computer, captures at about 2s/beat
@@ -29,7 +36,11 @@ function setup() {
   	//youTube aspect ratio is 16:9
   	//var scale = 70;
   	frameRate(30);
-  	createCanvas(windowWidth, windowHeight);
+
+  	if (canvasMode == 0) createCanvas(1830 * GSP, 870 * GSP);
+  	else if (canvasMode == 1) createCanvas(1830 * GSP, 120 * GSP);
+  	else if (canvasMode == 2) createCanvas(1830 * GSP, 1100 * GSP);
+
 	btn = document.createElement('button');
   	btn.textContent = "start recording";
   	document.body.appendChild(btn);
@@ -53,7 +64,7 @@ function setup() {
 
 function draw() {
   	clear();
-  	background(100);
+  	//background(100);
   	noFill();
 
 	var numFrames, modFrames;
@@ -64,8 +75,9 @@ function draw() {
 
   	
 	//draw periodic table in off state for all
-	for (i = 0; i < elementList.length; i++) elements[i].drawBox('off');
-
+	if (canvasMode == 0 || canvasMode == 2) {
+		for (i = 0; i < elementList.length; i++) elements[i].drawBox('off');
+	}
 
 	if (lyricsIndex < lyrics[0].length) {
 
@@ -325,74 +337,79 @@ function draw() {
 				
 				//BOXES
 				elements[correctedIndex].drawBox('on');
+				if (canvasMode == 1) {
+					clear();
+					background(bg);
+				}
 			}
 		}
 
 	}	
 
 	//-----CAPTION-----//
+	if (canvasMode == 1 || canvasMode == 2) {
 
-	//get total charWidth of current string
-	var totalCharWidth = getTotalCharWidth(textQueue);
-	//get rid of the below function?
-	//var totalBoxxWidth = getTotalBoxxWidth(boxxWidths);		
-	var totalBoxxWidth = totalCharWidth;
+		//get total charWidth of current string
+		var totalCharWidth = getTotalCharWidth(textQueue);
+		//get rid of the below function?
+		//var totalBoxxWidth = getTotalBoxxWidth(boxxWidths);		
+		var totalBoxxWidth = totalCharWidth;
 
-
-	//draw boxxes
-	if (boxxToggle == true) {
-		//determine number of boxxes to be drawn
-		for (var i = 0; i < boxxWidths.length; i++) {
-			if (boxxWidths[i] > 0) boxxCount++;
-		}
 
 		//draw boxxes
-		var cumWidth = 0;
-		totalBoxxWidth *= boxxWidthCorrection;
-		for (var i = 0; i < boxxCount; i++) {
-			setAestheticParameters('boxx');
-			rect(rightAlign - totalBoxxWidth + cumWidth, boxxYcoord, boxxWidthCorrection * boxxWidths[i], boxxHeight);
-			cumWidth += boxxWidthCorrection * boxxWidths[i];
-
-			//print atomic number
-			setAestheticParameters('boxxElement');
-			if (characterCorrection == 0.99) {
-				text(elements[boxxElements[i] - 1].text, rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
+		if (boxxToggle == true) {
+			//determine number of boxxes to be drawn
+			for (var i = 0; i < boxxWidths.length; i++) {
+				if (boxxWidths[i] > 0) boxxCount++;
 			}
-			else {
-				text(boxxElements[i], rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
+
+			//draw boxxes
+			var cumWidth = 0;
+			totalBoxxWidth *= boxxWidthCorrection;
+			for (var i = 0; i < boxxCount; i++) {
+				setAestheticParameters('boxx');
+				rect(rightAlign - totalBoxxWidth + cumWidth, boxxYcoord, boxxWidthCorrection * boxxWidths[i], boxxHeight);
+				cumWidth += boxxWidthCorrection * boxxWidths[i];
+
+				//print atomic number
+				setAestheticParameters('boxxElement');
+				if (characterCorrection == 0.99) {
+					text(elements[boxxElements[i] - 1].text, rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
+				}
+				else {
+					text(boxxElements[i], rightAlign - totalBoxxWidth + cumWidth - boxxElementCF, boxxYcoord + boxxElementCF);
+				}
+			}
+		}
+			
+
+		//iterate through all characters in string
+		var spacing = 0;
+		for (var i = 0; i < textQueue.length; i++) {
+
+			//get spacing of current character to be printed]
+			var currSpacing = getCurrSpacing(textQueue, i);
+			spacing += currSpacing;
+
+			//set colour
+			if (int(colourQueue[i]) == 1) fill(255, 0, 0, 255);
+			else if (int(colourQueue[i]) == 2) fill(0, 0, 255, 255);
+			else if (int(colourQueue[i]) == 3) fill(0, 0, 0, 100);
+
+			//print character
+			if (captionAlign == 'left') {
+				text(textQueue[i], 50 + charWidthCorrection * spacing, 600);
+			}
+
+			else if (captionAlign == 'right') {
+				setAestheticParameters('caption');
+				text(textQueue[i], rightAlign - charWidthCorrection * (totalCharWidth - spacing), captionYcoord);
+
+				//rect(rightAlign - boxWidthCorrection * (totalBoxxWidth - boxxWidth), 590, boxWidthCorrection * boxxWidth, 50);
+				//rect(rightAlign - boxxWidthCum, 590, boxWidthCorrection * boxxWidth, 50);
 			}
 		}
 	}
-		
-
-	//iterate through all characters in string
-	var spacing = 0;
-	for (var i = 0; i < textQueue.length; i++) {
-
-		//get spacing of current character to be printed]
-		var currSpacing = getCurrSpacing(textQueue, i);
-		spacing += currSpacing;
-
-		//set colour
-		if (int(colourQueue[i]) == 1) fill(255, 0, 0, 255);
-		else if (int(colourQueue[i]) == 2) fill(0, 0, 255, 255);
-		else if (int(colourQueue[i]) == 3) fill(0, 0, 0, 100);
-
-		//print character
-		if (captionAlign == 'left') {
-			text(textQueue[i], 50 + charWidthCorrection * spacing, 600);
-		}
-
-		else if (captionAlign == 'right') {
-			setAestheticParameters('caption');
-			text(textQueue[i], rightAlign - charWidthCorrection * (totalCharWidth - spacing), captionYcoord);
-
-			//rect(rightAlign - boxWidthCorrection * (totalBoxxWidth - boxxWidth), 590, boxWidthCorrection * boxxWidth, 50);
-			//rect(rightAlign - boxxWidthCum, 590, boxWidthCorrection * boxxWidth, 50);
-		}
-	}
-
 
 	//print beats
 	if (beatToggle == true) {
@@ -587,7 +604,10 @@ function runMetronome(numBeats) {
 }
 
 function record() {
-  capturer = new CCapture({ format: 'webm' , framerate: 30} );
+  
+
+
+  capturer = new CCapture({ format: 'png' , framerate: 30} );
   capturer.start();
   btn.textContent = 'stop recording';
 
@@ -599,5 +619,6 @@ function record() {
     btn.textContent = 'start recording';
     btn.onclick = record;
   };
+  
 }
 
