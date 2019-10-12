@@ -23,7 +23,6 @@ let capturer;
 let btn;
 let counter = 1;
 
-
 var elements = [];
 var boxxWidths = [];
 var boxxElements = [];
@@ -41,10 +40,13 @@ function setup() {
   	else if (canvasMode == 1) createCanvas(1830 * GSP, 120 * GSP);
   	else if (canvasMode == 2) createCanvas(1830 * GSP, 1100 * GSP);
 
+
+  	/*
 	btn = document.createElement('button');
   	btn.textContent = "start recording";
   	document.body.appendChild(btn);
   	btn.onclick = record;
+  	*/
 
 
  	pixelDensity(1);
@@ -67,12 +69,28 @@ function draw() {
   	//background(100);
   	noFill();
 
+
+
+
 	var numFrames, modFrames;
 	numFrames = floor(getTime()/1000 * 30);
 	var numBeats = getTime()/1000 * bpm * (1/60) + startAheadBy;
 
 
+  	//RECORDING
+  	if (numBeats >= recStart && numBeats <= recEnd && alreadyStarted == false) {
+  		alreadyStarted = true;
+  		capturer = new CCapture({ format: 'png' , framerate: 30} );
+  		capturer.start();
+  	}
 
+  	//STOP RECORDING
+  	if (numBeats > recEnd && alreadyStarted == true) {
+  		alreadyStarted = false;
+  		capturer.stop();
+  		capturer.save();
+    	capturer = null;
+  	}
   	
 	//draw periodic table in off state for all
 	if (canvasMode == 0 || canvasMode == 2) {
@@ -603,10 +621,9 @@ function runMetronome(numBeats) {
   	//}\
 }
 
+/*
 function record() {
-  
-
-
+ 
   capturer = new CCapture({ format: 'png' , framerate: 30} );
   capturer.start();
   btn.textContent = 'stop recording';
@@ -621,4 +638,4 @@ function record() {
   };
   
 }
-
+*/

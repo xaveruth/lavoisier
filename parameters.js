@@ -22,6 +22,12 @@ var atomicNumberSize = boxWidth/6;
 var boxOnThickness = 5;
 var boxOffThickness = 2;
 
+//RECORDING VARIABLES
+var recStart = 10;
+var recEnd = 20;
+var alreadyStarted = false;
+
+
 //CAPTIONS
 var captionSize = GSP * 80;
 var r = (255, 0, 0, 255);
