@@ -1,7 +1,7 @@
 //GLOBAL VARIABLES
 //TODO: put separate functions in their own files?
 
-var GSP = 1; //Global Size Parameter
+var GSP = .5; //Global Size Parameter
 
 //ON/OFF TOGGLES
 var boxxToggle = true;
@@ -19,19 +19,19 @@ var topLeftY = 10;
 var symbolSize = boxWidth/2.5;
 var symbolThickness = 0;
 var atomicNumberSize = boxWidth/6;
-var boxOnThickness = 5;
-var boxOffThickness = 2;
+var boxOnThickness = 5 * GSP;
+var boxOffThickness = 2 * GSP;
 
 //CAPTIONS
 var captionSize = GSP * 80;
 var r = (255, 0, 0, 255);
 var g = (200, 255, 200, 0);
 var captionColourThree = (255, 255, 255, 100);
-var captionX = 0.9;
+var captionX = 0.9 * GSP;
 var charWidthCorrection = 0.4;
 var captionAlign = 'right';
 var rightAlign = GSP * 1800;
-var leftBuffer = 50;
+var leftBuffer = 50 * GSP;
 if (canvasMode == 1) var captionYcoord = GSP * 30;
 if (canvasMode == 2) var captionYcoord = GSP * 950;
 
@@ -40,7 +40,7 @@ if (canvasMode == 2) var captionYcoord = GSP * 950;
 var boxxWidthCorrection = 0.4;
 var boxxHeight = captionSize * 1.1; //this doesn't seem to scale properly -- 1.1 is better for GSP = 1, but 1.2 is better for GSP = 0.5
 var boxxYcoord = captionYcoord - 10;
-var boxxElementCF = 2;
+var boxxElementCF = 2 * GSP;
 var boxxElementSize = 10 * GSP;
 var extraBoxxWidth = 20 * GSP;
 //var white = color(255,255,255,255);
@@ -101,7 +101,7 @@ var noteYCoord = 700;
 //8 beats = 3 seconds = 72 frames
 //9 frames/beat
 
-var bpm = 138;
+var bpm = 120;
 var secsPerMin = 60;
 var framesPerBeat = 24 * secsPerMin / bpm;
 var startAheadBy = -10;

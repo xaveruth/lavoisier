@@ -1,6 +1,4 @@
 function Element (index){
-	//this.border = 
-	//this.text = elementList[index];
 	this.index = index;
 	this.atomicNumber = index + 1;
 	this.text = elementList[index];
@@ -46,16 +44,14 @@ function Element (index){
 		if (state == 'on') {
 			this.strokeColour = white;
 			this.fontColour = white;
-			this.fillColour = black;
-			this.fontThickness = 3;
-			this.boxThickness = 3;
+			this.fillColour = red;
+			this.boxThickness = 2 * GSP;
 		}
 		else if (state == 'off') {
 			this.fillColour = colourArray[ptableColours[this.index]];
 			this.fontColour = captionColourArray[ptableCaptionColours[this.index] - 1];
 			this.strokeColour = black;
-			this.fontThickness = 1;
-			this.boxThickness = 2
+			this.boxThickness = 2 * GSP;
 		}	
 
 		//draw box
@@ -72,20 +68,12 @@ function Element (index){
 		//strokeWeight(this.fontThickness);
 		textSize(symbolSize);
 		textAlign(CENTER, CENTER);
-		text(this.text, this.x, this.y, boxWidth, boxHeight);
+		text(this.text, this.x + 5*GSP, this.y + 3*GSP, boxWidth, boxHeight);
 		index++;
 
 		//type atomic number
 		textAlign(RIGHT, TOP);
 		textSize(atomicNumberSize);
-		text(this.atomicNumber, this.x - 1, this.y + 1, boxWidth, boxHeight);
+		text(this.atomicNumber, this.x - 1*GSP, this.y + 2*GSP, boxWidth, boxHeight);
 	}
-
-
-	/*
-	this.play = function(duration) {
-
-	}
-*/
-
 }

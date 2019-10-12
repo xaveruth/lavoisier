@@ -3,7 +3,7 @@
 //2. add metronome to see if i'm getting the rhythm right
 
 //FFMPEG command
-//ffmpeg -r 30 -f image2 -s 3940x2160 -i %07d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test.mp4
+//ffmpeg -r 30 -f image2 -s 960x540 -i %07d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test.mp4
 //WHAT YOU MAY HAVE TO CHANGE
 //number after -r is frame rate
 //number after -s is resolution
@@ -37,9 +37,9 @@ function setup() {
   	//var scale = 70;
   	frameRate(30);
 
-  	if (canvasMode == 0) createCanvas(1830 * GSP, 870 * GSP);
-  	else if (canvasMode == 1) createCanvas(1830 * GSP, 120 * GSP);
-  	else if (canvasMode == 2) createCanvas(1830 * GSP, 1100 * GSP);
+  	if (canvasMode == 0) createCanvas(1840 * GSP, 880 * GSP);
+  	else if (canvasMode == 1) createCanvas(1840 * GSP, 120 * GSP);
+  	else if (canvasMode == 2) createCanvas(1840 * GSP, 1100 * GSP);
 
 	btn = document.createElement('button');
   	btn.textContent = "start recording";
