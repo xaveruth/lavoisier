@@ -1,11 +1,11 @@
 //GLOBAL VARIABLES
 //TODO: put separate functions in their own files?
 
-var GSP = .5; //Global Size Parameter
+var GSP = 1; //Global Size Parameter
 
 //ON/OFF TOGGLES
 var boxxToggle = true;
-var beatToggle = true;
+var beatToggle = false;
 var videoCapture = true;
 
 //CANVAS VARIABLES
@@ -24,7 +24,7 @@ var boxOffThickness = 2 * GSP;
 
 //RECORDING VARIABLES
 var recStart = 0;
-var recEnd = 10;
+var recEnd = 680;
 var alreadyStarted = false;
 
 

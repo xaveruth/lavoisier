@@ -42,36 +42,34 @@ function Element (index){
 	this.drawBox = function(state) {
 
 		if (state == 'on') {
-			this.strokeColour = white;
+			this.strokeColour = black;
 			this.fontColour = white;
 			this.fillColour = red;
-			this.boxThickness = 2 * GSP;
+			this.boxThickness = 6 * GSP;
+			textSize(1.5 * symbolSize);
 		}
 		else if (state == 'off') {
 			this.fillColour = colourArray[ptableColours[this.index]];
 			this.fontColour = captionColourArray[ptableCaptionColours[this.index] - 1];
 			this.strokeColour = black;
 			this.boxThickness = 2 * GSP;
+			textSize(symbolSize);
 		}	
 
-		//draw box
+		//BOX
 		fill(this.fillColour);
 		stroke(this.strokeColour)
 		strokeWeight(this.boxThickness);
 		rect(this.x, this.y, boxWidth, boxHeight);
 
-		//TRY FILLING TEXT?
-		//type symbol
+		//TEXT
 		fill(this.fontColour);
-		noStroke();
-		//stroke(this.strokeColour);
-		//strokeWeight(this.fontThickness);
-		textSize(symbolSize);
+		noStroke();	
 		textAlign(CENTER, CENTER);
-		text(this.text, this.x + 5*GSP, this.y + 3*GSP, boxWidth, boxHeight);
+		text(this.text, this.x - 3*GSP, this.y + 3*GSP, boxWidth * 1.2, boxHeight);
 		index++;
 
-		//type atomic number
+		//ATOMIC NUMBER
 		textAlign(RIGHT, TOP);
 		textSize(atomicNumberSize);
 		text(this.atomicNumber, this.x - 1*GSP, this.y + 2*GSP, boxWidth, boxHeight);

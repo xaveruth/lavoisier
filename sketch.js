@@ -3,13 +3,18 @@
 //2. add metronome to see if i'm getting the rhythm right
 
 //FFMPEG command
-//ffmpeg -r 30 -f image2 -s 960x540 -i %07d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test.mp4
+//ffmpeg -r 30 -f image2 -s 1840x1100 -i %07d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test.mp4
 //WHAT YOU MAY HAVE TO CHANGE
 //number after -r is frame rate
 //number after -s is resolution
 //number after -crf is quality (25 is "high" but i'm not sure if it's max)
 //the thing after -pix_fmt is pixel format -- don't know anything about this 
 //the %07d is the filename -- it just means the first one is 0000000
+
+
+//PRESERVE TRANSPARENCY
+//ffmpeg -r 30 -f image2 -s 1840x1100 -i %07d.png -vcodec png -crf 25 test.mov
+//ffmpeg  -vcodec png z.mov
 
 //VIDEO NOTES
 //on becca's computer, captures at about 2s/beat
@@ -66,16 +71,13 @@ function setup() {
 
 function draw() {
   	clear();
-  	//background(100);
   	noFill();
-
-
-
 
 	var numFrames, modFrames;
 	numFrames = floor(getTime()/1000 * 30);
 	var numBeats = getTime()/1000 * bpm * (1/60) + startAheadBy;
 
+	if ((floor(numBeats)%10) == 0) print(floor(numBeats));
 
   	//RECORDING
   	if (numBeats >= recStart && numBeats <= recEnd && alreadyStarted == false) {
