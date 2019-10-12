@@ -24,7 +24,7 @@ var boxOffThickness = 2 * GSP;
 
 //RECORDING VARIABLES
 var recStart = 10;
-var recEnd = 20;
+var recEnd = 30;
 var alreadyStarted = false;
 
 
