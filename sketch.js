@@ -70,9 +70,8 @@ function setup() {
 }
 
 function draw() {
-  	print(0);
   	background(230);
-  	noFill();
+  	//noFill();
 
 	var numFrames, modFrames;
 	numFrames = floor(getTime()/1000 * 30);
@@ -343,20 +342,21 @@ function draw() {
 					}
 				}
 
+				//flexibly change caption size based on array in parameters.js
+				var captionSF = 1;
+				for (var m = 0; m <= captionSizeArray.length; m++) {
+					if (numBeats > captionSizeArray[0][m]) captionSF = captionSizeArray[1][m];
+				}
+				print(numBeats, captionSF);
 
-				boxxWidths[boxxIndex] = boxxWidth;
-				boxxWidth+=5;
+
+				boxxWidths[boxxIndex] = boxxWidth * captionSF;
+				boxxWidth+=5 * captionSF;
 				boxxElements[boxxIndex] = elements[correctedIndex].atomicNumber;
 				boxxIndex++;
-				//print(elements[correctedIndex].text, extraCharacter, boxxWidth);
-				
-				//print(textQueue, boxxWidth);
-				
 
-
-			
-
-				colourQueue += str(lyrics[2][i]);				//add current colour to colour queue
+				//add current colour to colour queue
+				colourQueue += str(lyrics[2][i]);				
 				
 				//BOXES
 				elements[correctedIndex].drawBox('on');
@@ -366,16 +366,13 @@ function draw() {
 				}
 			}
 		}
-
 	}	
 
 	//-----CAPTION-----//
 	if (canvasMode == 1 || canvasMode == 2) {
 
 		//get total charWidth of current string
-		var totalCharWidth = getTotalCharWidth(textQueue);
-		//get rid of the below function?
-		//var totalBoxxWidth = getTotalBoxxWidth(boxxWidths);		
+		var totalCharWidth = getTotalCharWidth(textQueue) * captionSF;		
 		var totalBoxxWidth = totalCharWidth;
 
 
@@ -391,7 +388,7 @@ function draw() {
 			totalBoxxWidth *= boxxWidthCorrection;
 			for (var i = 0; i < boxxCount; i++) {
 				setAestheticParameters('boxx');
-				rect(rightAlign - totalBoxxWidth + cumWidth, boxxYcoord, boxxWidthCorrection * boxxWidths[i], boxxHeight);
+				rect(rightAlign - totalBoxxWidth + cumWidth, boxxYcoord, boxxWidthCorrection * boxxWidths[i], captionSF * boxxHeight);
 				cumWidth += boxxWidthCorrection * boxxWidths[i];
 
 				//print atomic number
@@ -411,7 +408,7 @@ function draw() {
 		for (var i = 0; i < textQueue.length; i++) {
 
 			//get spacing of current character to be printed]
-			var currSpacing = getCurrSpacing(textQueue, i);
+			var currSpacing = getCurrSpacing(textQueue, i) * captionSF;
 			spacing += currSpacing;
 
 			//set colour
@@ -425,23 +422,20 @@ function draw() {
 			}
 
 			else if (captionAlign == 'right') {
-				setAestheticParameters('caption');
+				setAestheticParameters('caption', captionSF);
 				text(textQueue[i], rightAlign - charWidthCorrection * (totalCharWidth - spacing), captionYcoord);
-
-				//rect(rightAlign - boxWidthCorrection * (totalBoxxWidth - boxxWidth), 590, boxWidthCorrection * boxxWidth, 50);
-				//rect(rightAlign - boxxWidthCum, 590, boxWidthCorrection * boxxWidth, 50);
 			}
 		}
 	}
 
 	//print beats
 	if (beatToggle == true) {
-		fill(0, 0, 0, 255);
-		text(floor(numBeats), 20, 20, 300, 100);
+		fill(100, 100, 100, 100);
+		text(floor(numBeats), 500, 1000);
 	}
 
 	//asterisk text
-	printAsteriskText(numBeats);
+	//printAsteriskText(numBeats);
 
 	//metronome
 	//runMetronome(numBeats);
@@ -464,10 +458,13 @@ function getTime() {
   return m;
 }
 
-function setAestheticParameters(element) {
+function setAestheticParameters(element, captionSF) {
 	if (element == 'caption') {
 		noStroke();
-		textSize(captionSize);
+
+
+
+		textSize(captionSize * captionSF);
 		textFont('Arial');
 		textAlign(RIGHT);
 	}
@@ -484,7 +481,7 @@ function setAestheticParameters(element) {
 		noStroke();
 		textAlign(RIGHT);
 		textFont('Arial');
-		fill(0);
+		fill(130);
 	}
 
 	if (element == 'technicalNotes') {
@@ -495,6 +492,7 @@ function setAestheticParameters(element) {
 	}
 }
 
+/*
 function printAsteriskText(numBeats) {
 	setAestheticParameters('technicalNotes');
 
@@ -508,6 +506,7 @@ function printAsteriskText(numBeats) {
 		text('*NoTe: ThIS IS A tRaCK ThAt EsPOUSeS eGaLiTe, LiBErTe, AlSO FrAtErNiTe, BUT, iN FaCT, \nAH, OUR gUY LaVOISiEr WaS KINd OF WISHY-WAsHY ON THe, UH, ReVOLuTiON ThINGeE, uH SO…', noteXCoord, noteYCoord);
 	}
 }
+*/
 
 //get total character width of current string
 function getTotalCharWidth(textQueue) {
