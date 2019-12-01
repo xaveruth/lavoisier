@@ -24,7 +24,7 @@ var boxOffThickness = 2 * GSP;
 
 //RECORDING VARIABLES
 var recStart = 0;
-var recEnd = 680;
+var recEnd = 5;
 var alreadyStarted = false;
 
 
@@ -107,10 +107,8 @@ var noteYCoord = 700;
 //8 beats = 3 seconds = 72 frames
 //9 frames/beat
 
-var bpm = 120;
-var secsPerMin = 60;
-var framesPerBeat = 24 * secsPerMin / bpm;
-var startAheadBy = -10;
+var bpm = 138;
+var startAheadBy = 0;
 
 
 elementList = ["H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al",

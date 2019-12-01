@@ -48,7 +48,7 @@ function setCoords () {
 		//Lanthanides and Actinides
 		for (i = 2; i <= 16; i++) { 
 			x = topLeftX + i * boxWidth;
-			y = topLeftY + boxHeight * (j + 3);
+			y = topLeftY + boxHeight * (j + 2.5);
 			index = elements[index].setCoords(x, y, index);
 		}
 

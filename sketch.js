@@ -70,29 +70,32 @@ function setup() {
 }
 
 function draw() {
-  	clear();
+  	print(0);
+  	background(230);
   	noFill();
 
 	var numFrames, modFrames;
 	numFrames = floor(getTime()/1000 * 30);
 	var numBeats = getTime()/1000 * bpm * (1/60) + startAheadBy;
 
-	if ((floor(numBeats)%10) == 0) print(floor(numBeats));
 
   	//RECORDING
-  	if (numBeats >= recStart && numBeats <= recEnd && alreadyStarted == false) {
-  		alreadyStarted = true;
-  		capturer = new CCapture({ format: 'png' , framerate: 30} );
-  		capturer.start();
-  	}
+  	if (videoCapture == true) {
+  		if (numBeats >= recStart && numBeats <= recEnd && alreadyStarted == false) {
+  			alreadyStarted = true;
+  			capturer = new CCapture({ format: 'png' , framerate: 30} );
+  			capturer.start();
+  		}
 
-  	//STOP RECORDING
-  	if (numBeats > recEnd && alreadyStarted == true) {
-  		alreadyStarted = false;
-  		capturer.stop();
-  		capturer.save();
-    	capturer = null;
-  	}
+	  	//STOP RECORDING
+	  	if (numBeats > recEnd && alreadyStarted == true) {
+	  		alreadyStarted = false;
+	  		capturer.stop();
+	  		capturer.save();
+	    	capturer = null;
+	  	}
+	}
+
   	
 	//draw periodic table in off state for all
 	if (canvasMode == 0 || canvasMode == 2) {
@@ -603,26 +606,6 @@ function drawBox (x, y, index) {
 }
 
 
-function runMetronome(numBeats) {
-	var osc;
-	osc = new p5.Oscillator();
- 	osc.setType('sine');
-  	osc.freq(240);
-  	osc.start();
-
-  	//if (mouseClicked()) {
-  		if (abs(numBeats - round(numBeats) < 0.1)) {
-			if ((round(numBeats) - 1) % 4 == 0) {
-				osc.amp(1);
-			}	
-  		}
-
-  		else {
-  			osc.amp(0);
-  		}
-  	//}\
-}
-
 /*
 function record() {
  
@@ -640,4 +623,5 @@ function record() {
   };
   
 }
+
 */
